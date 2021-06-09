@@ -2,10 +2,12 @@ package com.appsdeveloper.web.rest;
 
 import com.appsdeveloper.domain.Blog;
 import com.appsdeveloper.repository.BlogRepository;
+import com.appsdeveloper.security.SecurityUtils;
 import com.appsdeveloper.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +55,10 @@ public class BlogResource {
         log.debug("REST request to save Blog : {}", blog);
         if (blog.getId() != null) {
             throw new BadRequestAlertException("A new blog cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+
+        if(!blog.getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))){
+            return new ResponseEntity("error.http.43", HttpStatus.FORBIDDEN);
         }
         Blog result = blogRepository.save(blog);
         return ResponseEntity
