@@ -3,13 +3,6 @@ package com.appsdeveloper.web.rest;
 import com.appsdeveloper.domain.Blog;
 import com.appsdeveloper.repository.BlogRepository;
 import com.appsdeveloper.web.rest.errors.BadRequestAlertException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * REST controller for managing {@link com.appsdeveloper.domain.Blog}.
@@ -150,7 +151,7 @@ public class BlogResource {
     @GetMapping("/blogs")
     public List<Blog> getAllBlogs() {
         log.debug("REST request to get all Blogs");
-        return blogRepository.findAll();
+        return blogRepository.findByUserIsCurrentUser();
     }
 
     /**
