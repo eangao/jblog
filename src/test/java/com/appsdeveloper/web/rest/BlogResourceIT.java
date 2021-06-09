@@ -1,17 +1,9 @@
 package com.appsdeveloper.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import com.appsdeveloper.IntegrationTest;
 import com.appsdeveloper.domain.Blog;
 import com.appsdeveloper.repository.BlogRepository;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.persistence.EntityManager;
+import com.appsdeveloper.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +12,16 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link BlogResource} REST controller.
@@ -48,6 +50,9 @@ class BlogResourceIT {
     private EntityManager em;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private MockMvc restBlogMockMvc;
 
     private Blog blog;
@@ -58,8 +63,8 @@ class BlogResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Blog createEntity(EntityManager em) {
-        Blog blog = new Blog().name(DEFAULT_NAME).handle(DEFAULT_HANDLE);
+    public  Blog createEntity(EntityManager em) {
+        Blog blog = new Blog().name(DEFAULT_NAME).handle(DEFAULT_HANDLE).user(userRepository.findOneByLogin("user").get());
         return blog;
     }
 
